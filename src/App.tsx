@@ -3,7 +3,14 @@ import Map from "./components/Map";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 import { MapData } from "./types";
-import { walkLeft, walkUp, walkDown, walkRight } from "./redux/actions";
+import {
+	walkLeft,
+	walkUp,
+	walkDown,
+	walkRight,
+	loadMap,
+	nextLevel,
+} from "./redux/actions";
 
 function App() {
 	const dispatch = useDispatch();
@@ -27,6 +34,14 @@ function App() {
 		}
 	};
 
+	const { map, level } = useSelector(
+		(state: { map: MapData; level: number }) => {
+			return state;
+		}
+	);
+
+	const { completed } = map;
+
 	useEffect(() => {
 		document.addEventListener("keydown", handleKeyDown);
 		return () => {
@@ -34,9 +49,15 @@ function App() {
 		};
 	});
 
-	const map = useSelector(({ map }: { map: MapData }) => {
-		return map;
-	});
+	useEffect(() => {
+		dispatch(loadMap(level));
+	}, [dispatch, level]);
+
+	useEffect(() => {
+		if (completed) {
+			dispatch(nextLevel());
+		}
+	}, [completed, dispatch]);
 
 	return (
 		<div className={"app-app"}>

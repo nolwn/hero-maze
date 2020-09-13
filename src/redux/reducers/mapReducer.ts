@@ -4,15 +4,11 @@ import { MapData, Pos } from "../../types";
 
 type Dimension = "VERTICAL" | "HORIZONTAL";
 
-const sketch = `
-  ##########
-  #........e
-  #.########
-  #.......@#
-  ##########
-`;
-
-const initialState = initializeGame();
+const initialState: MapData = {
+	completed: false,
+	grid: [],
+	heroPos: [NaN, NaN],
+};
 
 export default function (state = initialState, action: Action): MapData {
 	let newState = { ...state };
@@ -30,8 +26,11 @@ export default function (state = initialState, action: Action): MapData {
 		case "WALK_RIGHT":
 			return updateHeroPosition(newState, "HORIZONTAL", 1);
 
+		case "LOAD_MAP":
+			return loadMap(action.payload);
+
 		default:
-			return { ...state };
+			return newState;
 	}
 }
 
@@ -54,9 +53,12 @@ function updateHeroPosition(
 		const posKind = checkPos(map, toPos);
 
 		if (posKind === "floor") {
-			setPos(map, toPos, "hero");
-			setPos(map, [fromX, fromY], "floor");
-			map.heroPos = toPos;
+			moveHero(map, map.heroPos, toPos);
+		}
+
+		if (posKind === "exit") {
+			moveHero(map, map.heroPos, toPos);
+			map.completed = true;
 		}
 	}
 
@@ -67,13 +69,9 @@ function inBounds(map: MapData, dim: Dimension, dist: number) {
 	const [fromX, fromY] = map.heroPos;
 
 	if (dim === "HORIZONTAL") {
-		console.log("horizontal", fromX, dist);
-		console.log("boundry", map.grid[0]);
 		const newValue = fromX + dist;
 		return newValue >= 0 && newValue <= map.grid[0].length;
 	} else {
-		console.log("vertical", fromY, dist);
-		console.log("boundry", map.grid.length);
 		const newValue = fromY + dist;
 		return newValue >= 0 && newValue <= map.grid.length;
 	}
@@ -85,6 +83,12 @@ function checkPos(state: MapData, [x, y]: Pos): PieceKind {
 
 function setPos(state: MapData, [x, y]: Pos, piece: PieceKind) {
 	state.grid[y][x] = piece;
+}
+
+function moveHero(map: MapData, fromPos: Pos, toPos: Pos) {
+	setPos(map, toPos, "hero");
+	setPos(map, fromPos, "floor");
+	map.heroPos = toPos;
 }
 
 function getHeroPos(map: PieceKind[][]): Pos | null {
@@ -100,15 +104,15 @@ function getHeroPos(map: PieceKind[][]): Pos | null {
 	return null;
 }
 
-export function initializeGame(): MapData {
-	const grid = compileFromString(sketch);
+export function loadMap(diagram: string): MapData {
+	const grid = compileFromString(diagram);
 	const heroPos = getHeroPos(grid);
 
 	if (heroPos === null) {
 		throw new Error("Hero could not be found.");
 	}
 
-	return { grid, heroPos };
+	return { grid, heroPos, completed: false };
 }
 
 function compileFromString(sketch: string): PieceKind[][] {
