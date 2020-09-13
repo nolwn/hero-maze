@@ -1,0 +1,27 @@
+.piece-piece {
+	width: 2rem;
+}
+
+.piece-piece:after {
+	content: "";
+	display: block;
+	padding-bottom: 100%;
+}
+
+.piece-wall {
+	background: black;
+}
+
+.piece-floor {
+}
+
+.piece-gold {
+	background: #ffd700;
+}
+
+.piece-hero {
+	background: #0df;
+}
+
+.piece-exit {
+}
