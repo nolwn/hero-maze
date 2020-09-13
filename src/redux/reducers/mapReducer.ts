@@ -1,6 +1,8 @@
 import { PieceKind } from "../../types";
-import { Action } from "../actionsTypes";
+import { Action } from "../actionTypes";
 import { MapData, Pos } from "../../types";
+
+type Dimension = "VERTICAL" | "HORIZONTAL";
 
 const sketch = `
   ##########
@@ -13,28 +15,67 @@ const sketch = `
 const initialState = initializeGame();
 
 export default function (state = initialState, action: Action): MapData {
+	let newState = { ...state };
+
 	switch (action.type) {
+		case "WALK_UP":
+			return updateHeroPosition(newState, "VERTICAL", -1);
+
 		case "WALK_LEFT":
-			console.log("walk left");
-			const newState = { ...state };
-			const [fromX, fromY] = state.heroPos;
+			return updateHeroPosition(newState, "HORIZONTAL", -1);
 
-			if (fromX === 0) {
-				return newState;
-			}
+		case "WALK_DOWN":
+			return updateHeroPosition(newState, "VERTICAL", 1);
 
-			const toPos: Pos = [fromX - 1, fromY];
-			const left = checkPos(newState, toPos);
+		case "WALK_RIGHT":
+			return updateHeroPosition(newState, "HORIZONTAL", 1);
 
-			if (left === "floor") {
-				setPos(newState, toPos, "hero");
-				setPos(newState, [fromX, fromY], "floor");
-				newState.heroPos = toPos;
-			}
-
-			return newState;
 		default:
 			return { ...state };
+	}
+}
+
+function updateHeroPosition(
+	map: MapData,
+	dim: Dimension,
+	dist: number
+): MapData {
+	const [fromX, fromY] = map.heroPos;
+
+	if (inBounds(map, dim, dist)) {
+		let toPos: Pos;
+
+		if (dim === "HORIZONTAL") {
+			toPos = [fromX + dist, fromY];
+		} else {
+			toPos = [fromX, fromY + dist];
+		}
+
+		const posKind = checkPos(map, toPos);
+
+		if (posKind === "floor") {
+			setPos(map, toPos, "hero");
+			setPos(map, [fromX, fromY], "floor");
+			map.heroPos = toPos;
+		}
+	}
+
+	return map;
+}
+
+function inBounds(map: MapData, dim: Dimension, dist: number) {
+	const [fromX, fromY] = map.heroPos;
+
+	if (dim === "HORIZONTAL") {
+		console.log("horizontal", fromX, dist);
+		console.log("boundry", map.grid[0]);
+		const newValue = fromX + dist;
+		return newValue >= 0 && newValue <= map.grid[0].length;
+	} else {
+		console.log("vertical", fromY, dist);
+		console.log("boundry", map.grid.length);
+		const newValue = fromY + dist;
+		return newValue >= 0 && newValue <= map.grid.length;
 	}
 }
 
@@ -73,7 +114,7 @@ export function initializeGame(): MapData {
 function compileFromString(sketch: string): PieceKind[][] {
 	const diagram: PieceKind[][] = [[]];
 	let rI = 0;
-	for (const char of sketch) {
+	for (const char of sketch.trim()) {
 		switch (char) {
 			case "\n":
 				rI++;
