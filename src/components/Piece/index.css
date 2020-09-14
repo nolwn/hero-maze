@@ -1,5 +1,5 @@
 .piece-piece {
-	width: 2rem;
+	width: 0.5rem;
 }
 
 .piece-piece:after {
@@ -20,7 +20,8 @@
 }
 
 .piece-hero {
-	background: #0df;
+	border-radius: 0.2rem;
+	background: #09b;
 }
 
 .piece-exit {

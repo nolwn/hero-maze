@@ -3,13 +3,12 @@ import { MapData } from "../../types";
 import Piece from "../Piece";
 import "./index.css";
 
-interface props {
-	map: MapData;
+interface Props {
+	map: MapData | null;
 }
 
-const Map: React.FC<props> = ({ map }) => {
-	console.log("RENDER");
-	const grid = map.grid;
+const Map: React.FC<Props> = ({ map }) => {
+	const grid = map?.grid || [];
 	return (
 		<div className="map-map">
 			{grid.map((row, i) => (

@@ -105,6 +105,10 @@ function getHeroPos(map: PieceKind[][]): Pos | null {
 }
 
 export function loadMap(diagram: string): MapData {
+	if (diagram === null) {
+		return diagram;
+	}
+
 	const grid = compileFromString(diagram);
 	const heroPos = getHeroPos(grid);
 
