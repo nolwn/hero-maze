@@ -7,7 +7,7 @@ interface Props {
 }
 
 const Piece: FC<Props> = ({ kind }) => {
-	return <div className={`piece-piece piece-${kind}`} />;
+	return <div className={`piece-area piece-${kind}`} />;
 };
 
 export default Piece;

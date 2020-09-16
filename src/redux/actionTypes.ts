@@ -1,6 +1,6 @@
 export interface Action {
 	type: MoveActionType | LevelActionType;
-	payload: any;
+	payload?: any;
 }
 
 type MoveActionType =
@@ -8,6 +8,7 @@ type MoveActionType =
 	| "WALK_UP"
 	| "WALK_DOWN"
 	| "WALK_RIGHT"
-	| "LOAD_MAP";
+	| "LOAD_MAP"
+	| "INCREASE_SCORE";
 
 type LevelActionType = "NEXT_LEVEL";

@@ -10,7 +10,9 @@ import {
 	loadMap,
 	nextLevel,
 } from "../../redux/actions";
-import GameOver from "../../components/GameOver";
+import GameOver from "../GameOver";
+import Score from "../Score";
+import "./game.css";
 
 interface Props {}
 
@@ -65,7 +67,8 @@ const Game: FC<Props> = () => {
 		return <GameOver />;
 	}
 	return (
-		<div className={"app-app"}>
+		<div className="game-area">
+			<Score />
 			<Map map={map} />
 		</div>
 	);

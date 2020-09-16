@@ -10,7 +10,7 @@ interface Props {
 const Map: React.FC<Props> = ({ map }) => {
 	const grid = map?.grid || [];
 	return (
-		<div className="map-map">
+		<div className="map-area">
 			{grid.map((row, i) => (
 				<div key={i} className="map-row">
 					{row.map((piece, i) => (

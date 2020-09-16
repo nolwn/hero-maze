@@ -8,9 +8,10 @@ interface Props {
 const GameOver: FC<Props> = () => {
 	return (
 		<>
-			<div className="gameover-gameover">
+			<div className="gameover-area">
 				<div>
 					<h1>Game Over</h1>
+					<hr />
 					<h2>Congradulations are in order</h2>
 				</div>
 			</div>

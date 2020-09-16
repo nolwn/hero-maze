@@ -1,8 +1,9 @@
-.piece-piece {
-	width: 0.5rem;
+.piece-area {
+	width: 100%;
+	max-width: 1rem;
 }
 
-.piece-piece:after {
+.piece-area:after {
 	content: "";
 	display: block;
 	padding-bottom: 100%;
@@ -20,7 +21,7 @@
 }
 
 .piece-hero {
-	border-radius: 0.2rem;
+	border-radius: 1rem;
 	background: #09b;
 }
 
