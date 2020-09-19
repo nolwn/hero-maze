@@ -1,4 +1,6 @@
-export type PieceKind = "wall" | "floor" | "hero" | "exit";
+export type Dimension = "VERTICAL" | "HORIZONTAL";
+
+export type PieceKind = "wall" | "floor" | "hero" | "exit" | "gold";
 
 export interface MapData {
 	completed: boolean;

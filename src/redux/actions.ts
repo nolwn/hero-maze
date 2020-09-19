@@ -1,5 +1,6 @@
 import { Action } from "./actionTypes";
 import { maps } from "../diagrams.data";
+import { PieceKind } from "../types";
 
 export function walkUp(): Action {
 	return {

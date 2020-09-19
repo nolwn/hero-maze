@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from "react";
+import React, { useEffect, FC, Dispatch } from "react";
 import Map from "../Map";
 import { useDispatch, useSelector } from "react-redux";
 import { MapData } from "../../types";
@@ -12,32 +12,15 @@ import {
 } from "../../redux/actions";
 import GameOver from "../GameOver";
 import Score from "../Score";
+import { inBounds, checkPos } from "../../utilities";
 import "./game.css";
+import { Action } from "redux";
+import { act } from "react-dom/test-utils";
 
 interface Props {}
 
 const Game: FC<Props> = () => {
-	const dispatch = useDispatch();
-
-	const handleKeyDown = (ev: KeyboardEvent) => {
-		switch (ev.code) {
-			case "ArrowLeft":
-				dispatch(walkLeft());
-				break;
-			case "ArrowUp":
-				dispatch(walkUp());
-				break;
-			case "ArrowDown":
-				dispatch(walkDown());
-				break;
-			case "ArrowRight":
-				dispatch(walkRight());
-				break;
-			default:
-				break;
-		}
-	};
-
+	const dispatch = useDispatch<Dispatch<Action>>();
 	const { map, level } = useSelector(
 		(state: { map: MapData; level: number }) => {
 			return state;
@@ -45,6 +28,36 @@ const Game: FC<Props> = () => {
 	);
 
 	const completed = map?.completed;
+	const handleKeyDown = (ev: KeyboardEvent) => {
+		const [heroX, heroY] = map.heroPos;
+		console.log("hero coords", [heroX, heroY]);
+		let toX = heroX;
+		let toY = heroY;
+		let actionCreator;
+		switch (ev.code) {
+			case "ArrowLeft":
+				toX--;
+				actionCreator = walkLeft;
+				break;
+			case "ArrowUp":
+				toY--;
+				actionCreator = walkUp;
+				break;
+			case "ArrowDown":
+				toY++;
+				actionCreator = walkDown;
+				break;
+			case "ArrowRight":
+				toX++;
+				actionCreator = walkRight;
+				break;
+			default:
+				break;
+		}
+		if (isWalkable(toX, toY, map) && actionCreator) {
+			dispatch(actionCreator());
+		}
+	};
 
 	useEffect(() => {
 		document.addEventListener("keydown", handleKeyDown);
@@ -73,5 +86,22 @@ const Game: FC<Props> = () => {
 		</div>
 	);
 };
+
+function getHeroSquare({ heroPos: [x, y], grid }: MapData) {
+	return grid[y][x];
+}
+
+function isWalkable(x: number, y: number, map: MapData) {
+	if (!inBounds(x, y, map)) {
+		console.log("OUT OF BOUNDS!");
+		return false;
+	}
+
+	const posKind = checkPos(map, [x, y]);
+
+	console.log(posKind);
+
+	return posKind === ("floor" || "gold" || "exit");
+}
 
 export default Game;

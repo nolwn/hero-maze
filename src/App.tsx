@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { useSelector } from "react-redux";
 import "./App.css";
 import Game from "./components/Game";
