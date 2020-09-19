@@ -1,6 +1,5 @@
 import { Action } from "./actionTypes";
 import { maps } from "../diagrams.data";
-import { PieceKind } from "../types";
 
 export function walkUp(): Action {
 	return {
@@ -33,9 +32,10 @@ export function loadMap(mapIndex: number): Action {
 	};
 }
 
-export function nextLevel(): Action {
+export function nextLevel(level: number): Action {
 	return {
 		type: "NEXT_LEVEL",
+		payload: level + 1,
 	};
 }
 

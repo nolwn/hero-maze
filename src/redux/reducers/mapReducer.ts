@@ -1,7 +1,6 @@
 import { PieceKind } from "../../types";
 import { Action } from "../actionTypes";
-import { Dimension, MapData, Pos } from "../../types";
-import { checkPos, getHeroPos, inBounds } from "../../utilities";
+import { MapData, Pos } from "../../types";
 
 const initialState: MapData = {
 	completed: false,
@@ -17,29 +16,21 @@ export default function (state = initialState, action: Action): MapData {
 	switch (action.type) {
 		case "WALK_UP":
 			newPos = [heroX, heroY - 1];
-			console.log("newPos", newPos);
-			moveHero(newState, state.heroPos, newPos);
 			newState.heroPos = newPos;
 			return newState;
 
 		case "WALK_LEFT":
 			newPos = [heroX - 1, heroY];
-			console.log("newPos", newPos);
-			moveHero(newState, state.heroPos, newPos);
 			newState.heroPos = newPos;
 			return newState;
 
 		case "WALK_DOWN":
 			newPos = [heroX, heroY + 1];
-			console.log("newPos", newPos);
-			moveHero(newState, state.heroPos, newPos);
 			newState.heroPos = newPos;
 			return newState;
 
 		case "WALK_RIGHT":
 			newPos = [heroX + 1, heroY];
-			console.log("newPos", newPos);
-			moveHero(newState, state.heroPos, newPos);
 			newState.heroPos = newPos;
 			return newState;
 
@@ -51,53 +42,42 @@ export default function (state = initialState, action: Action): MapData {
 	}
 }
 
-function setPos(state: MapData, [x, y]: Pos, piece: PieceKind) {
-	state.grid[y][x] = piece;
-}
-
-function moveHero(map: MapData, fromPos: Pos, toPos: Pos) {
-	console.log("fromPos", fromPos);
-	console.log("toPos", toPos);
-	setPos(map, toPos, "hero");
-	setPos(map, fromPos, "floor");
-	map.heroPos = toPos;
-}
-
 export function loadMap(diagram: string): MapData {
 	if (diagram === null) {
 		return diagram;
 	}
 
-	const grid = compileFromString(diagram);
-	const heroPos = getHeroPos(grid);
+	const map = compileFromString(diagram);
 
-	if (heroPos === null) {
+	if (isNaN(map.heroPos[0])) {
 		throw new Error("Hero could not be found.");
 	}
 
-	return { grid, heroPos, completed: false };
+	return map;
 }
 
-function compileFromString(sketch: string): PieceKind[][] {
-	const diagram: PieceKind[][] = [[]];
+function compileFromString(sketch: string): MapData {
+	const grid: PieceKind[][] = [[]];
 	let rI = 0;
+	let heroPos: Pos = [NaN, NaN];
 	for (const char of sketch.trim()) {
 		switch (char) {
 			case "\n":
 				rI++;
-				diagram[rI] = [];
+				grid[rI] = [];
 				break;
 			case ".":
-				diagram[rI].push("floor");
+				grid[rI].push("floor");
 				break;
 			case "#":
-				diagram[rI].push("wall");
+				grid[rI].push("wall");
 				break;
 			case "@":
-				diagram[rI].push("hero");
+				heroPos = [grid[rI].length, rI];
+				grid[rI].push("floor");
 				break;
 			case "e":
-				diagram[rI].push("exit");
+				grid[rI].push("exit");
 				break;
 			case "\t":
 			case " ":
@@ -107,5 +87,5 @@ function compileFromString(sketch: string): PieceKind[][] {
 		}
 	}
 
-	return diagram;
+	return { grid, heroPos, completed: false };
 }

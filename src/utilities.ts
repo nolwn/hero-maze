@@ -1,7 +1,6 @@
-import { Dimension, MapData, PieceKind, Pos } from "./types";
+import { MapData, PieceKind, Pos } from "./types";
 
 export function checkPos(state: MapData, [x, y]: Pos): PieceKind {
-	console.log(x, y);
 	return state.grid[y][x];
 }
 
@@ -24,29 +23,3 @@ export function inBounds(x: number, y: number, map: MapData) {
 
 	return xInBounds && yInBounds;
 }
-
-// export function
-// 	if (inBounds(map, dim, dist)) {
-// 		let toPos: Pos;
-
-// 		if (dim === "HORIZONTAL") {
-// 			toPos = [fromX + dist, fromY];
-// 		} else {
-// 			toPos = [fromX, fromY + dist];
-// 		}
-
-// 		const posKind = checkPos(map, toPos);
-
-// 		switch (posKind) {
-// 			case "floor":
-// 			case "gold":
-// 				moveHero(map, map.heroPos, toPos);
-// 				break;
-// 			case "exit":
-// 				moveHero(map, map.heroPos, toPos);
-// 				map.completed = true;
-// 				break;
-// 			default:
-// 				break;
-// 		}
-// 	}

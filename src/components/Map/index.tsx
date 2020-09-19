@@ -8,13 +8,17 @@ interface Props {
 }
 
 const Map: React.FC<Props> = ({ map }) => {
-	const grid = map?.grid || [];
+	if (map === null) {
+		return <div className="map-area" />;
+	}
+	const grid = map.grid;
+	const [heroX, heroY] = map?.heroPos;
 	return (
 		<div className="map-area">
-			{grid.map((row, i) => (
-				<div key={i} className="map-row">
-					{row.map((piece, i) => (
-						<Piece key={i} kind={piece} />
+			{grid.map((row, y) => (
+				<div key={y} className="map-row">
+					{row.map((piece, x) => (
+						<Piece key={x} isHero={y === heroY && x === heroX} kind={piece} />
 					))}
 				</div>
 			))}

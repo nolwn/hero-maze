@@ -1,7 +1,7 @@
 import React, { useEffect, FC, Dispatch } from "react";
 import Map from "../Map";
 import { useDispatch, useSelector } from "react-redux";
-import { MapData } from "../../types";
+import { MapData, PieceKind } from "../../types";
 import {
 	walkLeft,
 	walkUp,
@@ -15,9 +15,30 @@ import Score from "../Score";
 import { inBounds, checkPos } from "../../utilities";
 import "./game.css";
 import { Action } from "redux";
-import { act } from "react-dom/test-utils";
 
 interface Props {}
+
+function getUnderHero(map: MapData) {
+	const [heroX, heroY] = map.heroPos;
+	if (isNaN(heroX)) {
+		return "";
+	}
+
+	console.log(map.grid[heroY][heroX]);
+
+	return map.grid[heroY][heroX];
+}
+
+function isWalkable(x: number, y: number, map: MapData) {
+	if (!inBounds(x, y, map)) {
+		console.log("OUT OF BOUNDS!");
+		return false;
+	}
+
+	const posKind = checkPos(map, [x, y]);
+
+	return posKind === "floor" || posKind === "gold" || posKind === "exit";
+}
 
 const Game: FC<Props> = () => {
 	const dispatch = useDispatch<Dispatch<Action>>();
@@ -26,11 +47,9 @@ const Game: FC<Props> = () => {
 			return state;
 		}
 	);
-
-	const completed = map?.completed;
+	const exit: PieceKind = "exit";
 	const handleKeyDown = (ev: KeyboardEvent) => {
 		const [heroX, heroY] = map.heroPos;
-		console.log("hero coords", [heroX, heroY]);
 		let toX = heroX;
 		let toY = heroY;
 		let actionCreator;
@@ -71,14 +90,16 @@ const Game: FC<Props> = () => {
 	}, [dispatch, level]);
 
 	useEffect(() => {
-		if (completed) {
-			dispatch(nextLevel());
+		if (getUnderHero(map) === exit) {
+			console.log("hit the end");
+			dispatch(nextLevel(level));
 		}
-	}, [completed, dispatch]);
+	}, [dispatch, level, map]);
 
 	if (map === null) {
 		return <GameOver />;
 	}
+
 	return (
 		<div className="game-area">
 			<Score />
@@ -86,22 +107,5 @@ const Game: FC<Props> = () => {
 		</div>
 	);
 };
-
-function getHeroSquare({ heroPos: [x, y], grid }: MapData) {
-	return grid[y][x];
-}
-
-function isWalkable(x: number, y: number, map: MapData) {
-	if (!inBounds(x, y, map)) {
-		console.log("OUT OF BOUNDS!");
-		return false;
-	}
-
-	const posKind = checkPos(map, [x, y]);
-
-	console.log(posKind);
-
-	return posKind === ("floor" || "gold" || "exit");
-}
 
 export default Game;
