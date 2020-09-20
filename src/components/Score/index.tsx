@@ -7,7 +7,7 @@ interface Props {
 }
 
 const Score: FC<Props> = () => {
-	const score = useSelector(({ score }: FullState) => score);
+	const { score } = useSelector<FullState, FullState>((state) => state);
 
 	return (
 		<div className="score-area">

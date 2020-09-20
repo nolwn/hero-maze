@@ -1,7 +1,7 @@
-import { MapData, PieceKind, Pos } from "./types";
+import { PieceKind, Pos } from "./types";
 
-export function checkPos(state: MapData, [x, y]: Pos): PieceKind {
-	return state.grid[y][x];
+export function checkPos(grid: PieceKind[][], [x, y]: Pos): PieceKind {
+	return grid[y][x];
 }
 
 export function getHeroPos(map: PieceKind[][]): Pos | null {
@@ -17,9 +17,9 @@ export function getHeroPos(map: PieceKind[][]): Pos | null {
 	return null;
 }
 
-export function inBounds(x: number, y: number, map: MapData) {
-	const xInBounds = x >= 0 && x <= map.grid[0].length;
-	const yInBounds = y >= 0 && y <= map.grid.length;
+export function inBounds(x: number, y: number, grid: PieceKind[][]) {
+	const xInBounds = x >= 0 && x <= grid[0].length;
+	const yInBounds = y >= 0 && y <= grid.length;
 
 	return xInBounds && yInBounds;
 }

@@ -1,4 +1,8 @@
-import { createStore } from "redux";
-import { rootReducer } from "./reducers";
+import { createStore, Store } from "redux";
+import { FullState, rootReducer } from "./reducers";
 
-export default createStore(rootReducer);
+function setupStore(): Store<FullState> {
+	return createStore(rootReducer);
+}
+
+export default setupStore();

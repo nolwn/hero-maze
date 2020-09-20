@@ -1,18 +1,16 @@
 import React from "react";
-import { MapData } from "../../types";
+import { PieceKind, Pos } from "../../types";
 import Piece from "../Piece";
 import "./index.css";
 
 interface Props {
-	map: MapData | null;
+	grid: PieceKind[][];
+	heroPos: Pos;
 }
 
-const Map: React.FC<Props> = ({ map }) => {
-	if (map === null) {
-		return <div className="map-area" />;
-	}
-	const grid = map.grid;
-	const [heroX, heroY] = map?.heroPos;
+const Map: React.FC<Props> = ({ grid, heroPos }) => {
+	const [heroX, heroY] = heroPos;
+
 	return (
 		<div className="map-area">
 			{grid.map((row, y) => (

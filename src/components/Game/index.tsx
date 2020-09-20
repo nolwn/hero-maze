@@ -1,7 +1,7 @@
 import React, { useEffect, FC, Dispatch } from "react";
 import Map from "../Map";
 import { useDispatch, useSelector } from "react-redux";
-import { MapData, PieceKind } from "../../types";
+import { PieceKind, Pos } from "../../types";
 import {
 	walkLeft,
 	walkUp,
@@ -15,41 +15,37 @@ import Score from "../Score";
 import { inBounds, checkPos } from "../../utilities";
 import "./game.css";
 import { Action } from "redux";
+import { FullState } from "../../redux/reducers";
 
 interface Props {}
 
-function getUnderHero(map: MapData) {
-	const [heroX, heroY] = map.heroPos;
+function getUnderHero(grid: PieceKind[][], heroPos: Pos) {
+	const [heroX, heroY] = heroPos;
 	if (isNaN(heroX)) {
 		return "";
 	}
 
-	console.log(map.grid[heroY][heroX]);
-
-	return map.grid[heroY][heroX];
+	return grid[heroY][heroX];
 }
 
-function isWalkable(x: number, y: number, map: MapData) {
-	if (!inBounds(x, y, map)) {
-		console.log("OUT OF BOUNDS!");
+function isWalkable(x: number, y: number, grid: PieceKind[][]) {
+	if (!inBounds(x, y, grid)) {
 		return false;
 	}
 
-	const posKind = checkPos(map, [x, y]);
+	const posKind = checkPos(grid, [x, y]);
 
 	return posKind === "floor" || posKind === "gold" || posKind === "exit";
 }
 
 const Game: FC<Props> = () => {
 	const dispatch = useDispatch<Dispatch<Action>>();
-	const { map, level } = useSelector(
-		(state: { map: MapData; level: number }) => {
-			return state;
-		}
+	const { heroPos, grid, level } = useSelector<FullState, FullState>(
+		(state) => state
 	);
 	const exit: PieceKind = "exit";
 	const handleKeyDown = (ev: KeyboardEvent) => {
-		const [heroX, heroY] = map.heroPos;
+		const [heroX, heroY] = heroPos;
 		let toX = heroX;
 		let toY = heroY;
 		let actionCreator;
@@ -73,7 +69,7 @@ const Game: FC<Props> = () => {
 			default:
 				break;
 		}
-		if (isWalkable(toX, toY, map) && actionCreator) {
+		if (isWalkable(toX, toY, grid) && actionCreator) {
 			dispatch(actionCreator());
 		}
 	};
@@ -86,24 +82,22 @@ const Game: FC<Props> = () => {
 	});
 
 	useEffect(() => {
-		dispatch(loadMap(level));
-	}, [dispatch, level]);
-
-	useEffect(() => {
-		if (getUnderHero(map) === exit) {
-			console.log("hit the end");
-			dispatch(nextLevel(level));
+		if (getUnderHero(grid, heroPos) === exit) {
+			dispatch(loadMap(level.current + 1));
+			dispatch(nextLevel(level.current));
+		} else if (grid.length === 0) {
+			dispatch(loadMap(level.current));
 		}
-	}, [dispatch, level, map]);
+	}, [dispatch, level, grid, heroPos]);
 
-	if (map === null) {
+	if (level.current === level.final) {
 		return <GameOver />;
 	}
 
 	return (
 		<div className="game-area">
 			<Score />
-			<Map map={map} />
+			<Map grid={grid} heroPos={heroPos} />
 		</div>
 	);
 };

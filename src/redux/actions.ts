@@ -28,7 +28,7 @@ export function walkRight(): Action {
 export function loadMap(mapIndex: number): Action {
 	return {
 		type: "LOAD_MAP",
-		payload: maps[mapIndex],
+		payload: maps[mapIndex] || "",
 	};
 }
 
@@ -36,6 +36,13 @@ export function nextLevel(level: number): Action {
 	return {
 		type: "NEXT_LEVEL",
 		payload: level + 1,
+	};
+}
+
+export function setFinalLevel(): Action {
+	return {
+		type: "SET_FINAL_LEVEL",
+		payload: maps.length,
 	};
 }
 
