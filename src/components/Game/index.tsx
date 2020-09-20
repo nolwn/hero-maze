@@ -90,6 +90,7 @@ const Game: FC<Props> = () => {
 				break;
 			case "gold":
 				dispatch(takeGold(heroPos));
+				break;
 			default:
 				break;
 		}
