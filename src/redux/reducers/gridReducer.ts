@@ -10,6 +10,11 @@ export default function (state = initialState, action: Action): PieceKind[][] {
 		case "LOAD_MAP":
 			return compileFromString(action.payload);
 
+		case "TAKE_GOLD":
+			const [x, y] = action.payload;
+			newState[y][x] = "floor";
+			return newState;
+
 		default:
 			return newState;
 	}
@@ -38,6 +43,9 @@ function compileFromString(diagram: string): PieceKind[][] {
 				break;
 			case "e":
 				grid[rI].push("exit");
+				break;
+			case "*":
+				grid[rI].push("gold");
 				break;
 			case "\t":
 			case " ":

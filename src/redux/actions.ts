@@ -1,5 +1,6 @@
 import { Action } from "./actionTypes";
 import { maps } from "../diagrams.data";
+import { Pos } from "../types";
 
 export function walkUp(): Action {
 	return {
@@ -50,5 +51,12 @@ export function increaseScore(amount: number): Action {
 	return {
 		type: "INCREASE_SCORE",
 		payload: amount,
+	};
+}
+
+export function takeGold(location: Pos): Action {
+	return {
+		type: "TAKE_GOLD",
+		payload: location,
 	};
 }

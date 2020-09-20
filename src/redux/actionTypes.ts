@@ -10,6 +10,7 @@ type MoveActionType =
 	| "WALK_RIGHT"
 	| "LOAD_MAP"
 	| "INCREASE_SCORE"
-	| "SET_FINAL_LEVEL";
+	| "SET_FINAL_LEVEL"
+	| "TAKE_GOLD";
 
 type LevelActionType = "NEXT_LEVEL";

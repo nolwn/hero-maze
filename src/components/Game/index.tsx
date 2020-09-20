@@ -9,6 +9,7 @@ import {
 	walkRight,
 	loadMap,
 	nextLevel,
+	takeGold,
 } from "../../redux/actions";
 import GameOver from "../GameOver";
 import Score from "../Score";
@@ -19,10 +20,10 @@ import { FullState } from "../../redux/reducers";
 
 interface Props {}
 
-function getUnderHero(grid: PieceKind[][], heroPos: Pos) {
+function getUnderHero(grid: PieceKind[][], heroPos: Pos): PieceKind {
 	const [heroX, heroY] = heroPos;
 	if (isNaN(heroX)) {
-		return "";
+		return "floor";
 	}
 
 	return grid[heroY][heroX];
@@ -43,7 +44,7 @@ const Game: FC<Props> = () => {
 	const { heroPos, grid, level } = useSelector<FullState, FullState>(
 		(state) => state
 	);
-	const exit: PieceKind = "exit";
+
 	const handleKeyDown = (ev: KeyboardEvent) => {
 		const [heroX, heroY] = heroPos;
 		let toX = heroX;
@@ -82,10 +83,18 @@ const Game: FC<Props> = () => {
 	});
 
 	useEffect(() => {
-		if (getUnderHero(grid, heroPos) === exit) {
-			dispatch(loadMap(level.current + 1));
-			dispatch(nextLevel(level.current));
-		} else if (grid.length === 0) {
+		switch (getUnderHero(grid, heroPos)) {
+			case "exit":
+				dispatch(loadMap(level.current + 1));
+				dispatch(nextLevel(level.current));
+				break;
+			case "gold":
+				dispatch(takeGold(heroPos));
+			default:
+				break;
+		}
+
+		if (grid.length === 0) {
 			dispatch(loadMap(level.current));
 		}
 	}, [dispatch, level, grid, heroPos]);

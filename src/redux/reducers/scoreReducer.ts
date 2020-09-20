@@ -1,3 +1,4 @@
+import { GOLD_VALUE } from "../../constants";
 import { Action } from "../actionTypes";
 
 const initialState = 0;
@@ -11,6 +12,9 @@ export default function scoreReducer(
 			const amount = action.payload;
 
 			return state + amount;
+
+		case "TAKE_GOLD":
+			return state + GOLD_VALUE;
 
 		default:
 			return state;

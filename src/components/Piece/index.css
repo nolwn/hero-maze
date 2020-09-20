@@ -18,6 +18,9 @@
 
 .piece-gold {
 	background: #ffd700;
+	border: white solid 0.25rem;
+	border-radius: 0.5rem;
+	width: 0.5rem;
 }
 
 .piece-hero {
