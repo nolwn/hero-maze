@@ -10,7 +10,6 @@ export default function scoreReducer(
 	switch (action.type) {
 		case "INCREASE_SCORE":
 			const amount = action.payload;
-
 			return state + amount;
 
 		case "TAKE_GOLD":
