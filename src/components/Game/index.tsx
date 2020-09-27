@@ -14,9 +14,9 @@ import {
 import GameOver from "../GameOver";
 import Score from "../Score";
 import { inBounds, checkPos } from "../../utilities";
-import "./game.css";
 import { Action } from "redux";
 import { FullState } from "../../redux/reducers";
+import "./game.css";
 
 interface Props {}
 

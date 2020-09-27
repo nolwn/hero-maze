@@ -26,15 +26,16 @@ function loadItems(diagram: string) {
 	let y = 0;
 
 	for (const char of diagram.trim()) {
+		let row = map?.[x];
+
+		if (row === undefined) {
+			map[x] = {};
+			row = map[x];
+		}
 		if (char === "*") {
-			let row = map?.[x];
-
-			if (row === undefined) {
-				map[x] = {};
-				row = map[x];
-			}
-
 			row[y] = makeThing([x, y], "gold");
+		} else if (char === "e") {
+			row[y] = makeThing([x, y], "exit");
 		} else if (char === "\n") {
 			y++;
 			x = -1;

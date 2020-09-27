@@ -37,13 +37,11 @@ function compileFromString(diagram: string): PieceKind[][] {
 			case "@":
 			case ".":
 			case "*":
+			case "e":
 				grid[rI].push("floor");
 				break;
 			case "#":
 				grid[rI].push("wall");
-				break;
-			case "e":
-				grid[rI].push("exit");
 				break;
 			case "\t":
 			case " ":
