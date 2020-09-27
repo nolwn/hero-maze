@@ -30,12 +30,14 @@ const Map: React.FC<Props> = ({ grid, things, heroPos }) => {
 										/>
 									);
 								}
+
+								return <div key={x} />;
 							})}
 						</div>
 					);
 				}
 
-				return <div />;
+				return <div key={y} />;
 			})}
 		</div>
 	);
