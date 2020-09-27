@@ -1,7 +1,7 @@
 import React, { useEffect, FC, Dispatch } from "react";
 import Map from "../Map";
 import { useDispatch, useSelector } from "react-redux";
-import { PieceKind, Pos } from "../../types";
+import { CoordMap, PieceKind, Pos } from "../../types";
 import {
 	walkLeft,
 	walkUp,
@@ -20,10 +20,20 @@ import { FullState } from "../../redux/reducers";
 
 interface Props {}
 
-function getUnderHero(grid: PieceKind[][], heroPos: Pos): PieceKind {
+function getUnderHero(
+	grid: PieceKind[][],
+	things: CoordMap,
+	heroPos: Pos
+): PieceKind {
 	const [heroX, heroY] = heroPos;
 	if (isNaN(heroX)) {
 		return "floor";
+	}
+
+	const thing = things[heroX]?.[heroY];
+
+	if (thing !== undefined) {
+		return thing.type;
 	}
 
 	return grid[heroY][heroX];
@@ -41,7 +51,7 @@ function isWalkable(x: number, y: number, grid: PieceKind[][]) {
 
 const Game: FC<Props> = () => {
 	const dispatch = useDispatch<Dispatch<Action>>();
-	const { heroPos, grid, level } = useSelector<FullState, FullState>(
+	const { heroPos, grid, level, things } = useSelector<FullState, FullState>(
 		(state) => state
 	);
 
@@ -83,7 +93,7 @@ const Game: FC<Props> = () => {
 	});
 
 	useEffect(() => {
-		switch (getUnderHero(grid, heroPos)) {
+		switch (getUnderHero(grid, things, heroPos)) {
 			case "exit":
 				dispatch(loadMap(level.current + 1));
 				dispatch(nextLevel(level.current));
@@ -98,7 +108,7 @@ const Game: FC<Props> = () => {
 		if (grid.length === 0) {
 			dispatch(loadMap(level.current));
 		}
-	}, [dispatch, level, grid, heroPos]);
+	}, [dispatch, level, things, grid, heroPos]);
 
 	if (level.current === level.final) {
 		return <GameOver />;
@@ -107,7 +117,7 @@ const Game: FC<Props> = () => {
 	return (
 		<div className="game-area">
 			<Score />
-			<Map grid={grid} heroPos={heroPos} />
+			<Map grid={grid} things={things} heroPos={heroPos} />
 		</div>
 	);
 };

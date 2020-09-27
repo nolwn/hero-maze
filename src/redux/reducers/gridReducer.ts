@@ -36,6 +36,7 @@ function compileFromString(diagram: string): PieceKind[][] {
 				break;
 			case "@":
 			case ".":
+			case "*":
 				grid[rI].push("floor");
 				break;
 			case "#":
@@ -43,9 +44,6 @@ function compileFromString(diagram: string): PieceKind[][] {
 				break;
 			case "e":
 				grid[rI].push("exit");
-				break;
-			case "*":
-				grid[rI].push("gold");
 				break;
 			case "\t":
 			case " ":
