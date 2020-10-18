@@ -1,6 +1,6 @@
 .piece-area {
 	width: 100%;
-	max-width: 1rem;
+	max-width: 3rem;
 }
 
 .piece-area:after {
@@ -19,12 +19,12 @@
 .piece-gold {
 	background: #ffd700;
 	border: white solid 0.25rem;
-	border-radius: 0.5rem;
+	border-radius: 3rem;
 	box-sizing: border-box;
 }
 
 .piece-hero {
-	border-radius: 1rem;
+	border-radius: 3rem;
 	background: #09b;
 }
 

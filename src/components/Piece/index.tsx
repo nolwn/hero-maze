@@ -2,12 +2,12 @@ import React, { FC } from "react";
 import { PieceKind } from "../../types";
 import "./index.css";
 
-interface Props {
+export interface PieceProps {
 	kind: PieceKind;
 	isHero: boolean;
 }
 
-const Piece: FC<Props> = ({ kind, isHero }) => {
+const Piece: FC<PieceProps> = ({ kind, isHero }) => {
 	const hero: PieceKind = "hero";
 	return <div className={`piece-area piece-${isHero ? hero : kind}`} />;
 };
